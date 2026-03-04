@@ -115,10 +115,19 @@ repackage(){
 
 	# Workaround: pandas 2.3.3 doesn't exist on PyPI (as of 2026-03-04).
 	# Replace it with latest available patch in 2.3 series.
+
+	# Workaround: PyMuPDF 1.26.4 isn't available/compatible in some envs.
+	# Replace it with a known-good version.
+	
 	if [ -f "$REQ_FILE" ]; then
 		if grep -Eq '^[[:space:]]*pandas(\[[^]]+\])?[[:space:]]*~=[[:space:]]*2\.3\.3([[:space:]]|$)' "$REQ_FILE"; then
 		  echo "Patching $REQ_FILE: pandas(*extras*)~=2.3.3 -> pandas(*extras*)==2.3.2"
 		  sed -i -E 's/^([[:space:]]*pandas(\[[^]]+\])?)[[:space:]]*~=[[:space:]]*2\.3\.3([[:space:]]|$)/\1==2.3.2\3/' "$REQ_FILE"
+		fi
+
+		if grep -Eq '^[[:space:]]*PyMuPDF[[:space:]]*~=[[:space:]]*1\.26\.4([[:space:]]|$)' "$REQ_FILE"; then
+		  echo "Patching $REQ_FILE: PyMuPDF~=1.26.4 -> PyMuPDF==1.26.0"
+		  sed -i -E 's/^([[:space:]]*PyMuPDF)[[:space:]]*~=[[:space:]]*1\.26\.4([[:space:]]|$)/\1==1.26.0\2/' "$REQ_FILE"
 		fi
 	fi
 	
